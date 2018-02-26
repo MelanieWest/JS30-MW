@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mouse Shadow</title>
+</head>
+<body>
+
+  <div class="hero">
+    <h1 contenteditable>🔥WHOA!</h1>
+  </div>
+
+  <style>
+  html {
+    color:black;
+    font-family: sans-serif;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    color:black;
+  }
+
+  h1 {
+    text-shadow: 10px 10px 0 rgba(0,0,0,1);
+    font-size: 100px;
+  }
+  </style>
+
+<script>
+
+  //the hero element is the whole page.
+  const hero = document.querySelector('.hero');
+  //to modify the shadow we need the text in the h1 tag
+  const text = hero.querySelector('h1');
+  //set a variable to determine the greatest extent ('walk') of the shadow
+  const walk = 200;
+
+
+
+
+
+  function shadow(e){
+    //console.log(e);
+    // const width = hero.offsetWidth;
+    // const width = hero.offsetHeight;
+
+    //one line to do the same as above - destructured
+    const {offsetWidth: width, offsetHeight: height} = hero;
+
+    //find the x & y value of mousemove on the document.
+    //the challenge:  x & y will reset when the mouse encounters a 'child' element
+    //of the 'hero' div.  that will need to be fixed
+
+    let {offsetX: x, offsetY: y}=e;
+
+    //modify x and y if the target element is not the hero div
+    //'this' is the 'hero' div, and e.target is the target element that
+    //actually triggered the mousemove event
+
+    if(this !== e.target){
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+   // console.log(x,y);
+    const xWalk = Math.round(( x/width*walk)-(walk/2));
+    const yWalk = Math.round((y/height*walk)-(walk/2));
+    console.log(xWalk,yWalk);
+
+
+    //add multiple shadows in multiple colors
+    text.style.textShadow = `${xWalk}px ${yWalk}px 0 rgba(0,0,255,0.7),
+    ${-xWalk}px ${yWalk}px 0 rgba(255,0,255,0.7),
+   ${-xWalk}px ${-yWalk}px 0 rgba(0,255,255,0.7),
+  ${xWalk}px ${-yWalk}px 0 rgba(255,255,0,0.7)`;
+    
+
+  }
+
+  hero.addEventListener('mousemove',shadow);
+
+</script>
+</body>
+</html>

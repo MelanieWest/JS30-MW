@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+</head>
+<body>
+
+
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+
+  <style>
+    html {
+      background:#018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
+      background-size:cover;
+      font-family:'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+      margin: 0;
+      font-size: 2rem;
+      display:flex;
+      flex:1;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .clock {
+      width: 30rem;
+      height: 30rem;
+      border:20px solid white;
+      border-radius:50%;
+      margin:50px auto;
+      position: relative;
+      padding:2rem;
+      box-shadow:
+        0 0 0 4px rgba(0,0,0,0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px); /* account for the height of the clock hands */
+    }
+
+    .hand {
+      width:50%;
+      height:6px;
+      /* background:black; */
+      position: absolute;
+      top:50%;
+    }
+
+   .second-hand,.min-hand, .hour-hand{
+      transform-origin: 100% 100%; 
+    }
+    
+    .hour-hand{
+      background: darkblue;
+    }
+    .min-hand {
+      background: lightskyblue;
+    }
+
+    .second-hand {
+      background: white;
+    }
+
+  </style>
+
+  <script>
+ 
+
+   window.onload=function(){
+
+    //   var timeInMs = Date.now();
+    // console.log(timeInMs);
+
+    // I only use the date function this once, and then trust the timer counter to keep time well enough afterwards.
+    //if it seems less accurate, I could re-read the date/time once per hour to reset/update the values.
+
+    var date = new Date();
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    var sec = date.getSeconds();
+
+    console.log("date: "+date);
+    console.log("hour: "+hour);
+    console.log("minute: "+min);
+    console.log("second: "+sec);
+
+    var secHand = document.getElementsByClassName("second-hand");
+    var minHand = document.getElementsByClassName("min-hand");
+    var hourHand = document.getElementsByClassName("hour-hand");
+    
+      var secDeg = 90.+(sec*6);                       // 6 degrees rotation per second
+      var minDeg = 90.+(min + (sec/60))*6;            // 6 degrees rotation per minute
+      var hrDeg = 90.+(hour+(min/60)+(sec/3600))*30;  // 30 degrees rotation per hour
+
+      var count = 0;
+      intervalTimer = setInterval(moveHands,1000);
+      if(count == 108000 ){    //for now, just run for 3 hours.  future, enable a stop feature
+            clearTimeout(intervalTimer);
+        }
+
+      secHand[0].style.transform = "rotate("+secDeg+"deg)";
+      minHand[0].style.transform = "rotate("+minDeg+"deg)";
+      hourHand[0].style.transform = "rotate("+hrDeg+"deg)";
+
+      function moveHands(){
+
+        count +=1;
+
+        sec+=1;
+        if(sec%60 == 0){
+          sec = 0;    //restart seconds
+          min += 1;
+        }
+        if(min%60 ==0){
+          date = new Date();        //once an hour, verify time instead of relying on internal timer
+          hour = date.getHours();
+          min =  date.getMinutes();    
+          sec =  date.getSeconds();     
+          hour += 1;
+        }
+
+        secDeg = 90.+(sec*6);                       // 6 degrees rotation per second
+        minDeg = 90.+(min + (sec/60))*6;            // 6 degrees rotation per minute
+        hrDeg = 90.+(hour+(min/60)+(sec/3600))*30;  // 30 degrees rotation per hour
+        //minDeg = 90.+(min*6);
+        //hrDeg = 90.+(hour*30);
+ 
+        secHand[0].style.transform = "rotate("+secDeg+"deg)";
+        minHand[0].style.transform = "rotate("+minDeg+"deg)";
+        hourHand[0].style.transform = "rotate("+hrDeg+"deg)";
+
+        return count;
+
+      }
+    }
+  
+
+  </script>
+</body>
+</html>

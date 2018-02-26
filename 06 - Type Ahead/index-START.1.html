@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form  class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+const cities =[];   //create an empty cities array to start
+
+//use javascript fetch to fetch the data and stuff it into an array for use in matching
+// (note: 'cities' is really a json file with an array of objects that includes city, state & population)
+
+fetch(endpoint)
+  .then(blob=>blob.json())
+  .then(data => cities.push(...data));    //the ellipsis is the ES6 way of separating the data into separate items
+
+//create a function that will locate either a city or a state (place) that matches the typed text
+
+function findMatches(wordToMatch, cities){
+  return cities.filter(place => {
+    //we need to figure out if the city matches the search text
+    const regex = new RegExp(wordToMatch,'gi');   //global, case-insensitive
+
+    //return place.city.match(/wordToMatch/i) - I can't use this because this regular expression won't accept a variable - it will try to match 'wordToMatch' only -
+    //instead we have to use the regex we generated (regular expression)
+
+    return place.city.match(regex) || place.state.match(regex)
+  });
+}
+
+//next we need to work on the display
+function displayMatches(){
+  //call my findMatches function using the current input value
+  const matchArray = findMatches(this.value, cities);
+  //console.log(matchArray);
+
+  //display the matches in the suggestions div with the var 'html'
+
+  const html = matchArray.map(place => {
+
+    //I want to highlight the text portion that matches the search input.  This next block does the replacement
+    //before we create the display html
+
+    const regex = new RegExp(this.value, 'gi');
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+    const stateName = place.state.replace(regex,`<span class="hl">${this.value}</span>`);
+
+    return `
+    <li>
+      <span class="name">${cityName}, ${stateName}</span>
+      <span class="population">${numberWithCommas(place.population)}</span>
+    </li>
+    `;
+  }).join('');
+
+  suggestions.innerHTML = html;
+}
+
+function numberWithCommas(numberWithoutCommas){
+  return numberWithoutCommas.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+//the input box has the class 'search' - so look there
+
+const searchInput = document.querySelector('.search');
+
+//also search the 'suggestions' ul.  Why?
+const suggestions = document.querySelector('.suggestions');
+
+//'listen' for changes in the input box.  Every time there is a change, run findMatches.
+//'change' occurs when I click outside the div
+//'onkeyup' occurs with each key strike - this one is called more often
+
+searchInput.addEventListener('change',displayMatches);
+searchInput.addEventListener('keyup',displayMatches);
+
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Reference vs Copy</title>
+</head>
+<body>
+
+  <script>
+    // start with strings, numbers and booleans
+    let age = 100;
+    let age2 = age;
+    console.log(age,age2);
+    age =200;
+    console.log(age,age2);
+
+    let name = 'Mel';
+    let name2 = name;
+    console.log(name,name2);
+    name = 'West';
+    console.log(name,name2);
+    //the point here is that the second variable will not change
+    //when the original is updated
+    
+
+    // Let's say we have an array
+    const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
+
+    // and we want to make a copy of it. (just set a new var equal to the array)
+    const team = players;   //this is a REFERENCE to the original array, not a copy
+
+    console.log(players, team);
+
+    // You might think we can just do something like this:
+    //team[3] = 'Lux';
+
+    // however what happens when we update that array?
+    
+          //using the chrome dev tools console, we see that BOTH arrays were modified.  Wierd!!
+
+
+    // now here is the problem!
+
+    // oh no - we have edited the original array too!
+
+    // Why? It's because 'team' is an array REFERENCE, not an array copy. They both point to the same array!
+
+
+
+
+    // So, how do we fix this? We take a COPY instead!
+
+    // one way (slice, without specifying start and stop indices)
+
+    const team2 = players.slice();
+
+    // or create a new array (brackets) and concat the old one in
+    const team3= [].concat(players);
+
+    // or use the new ES6 Spread(it 'spreads out' the items of the original array)
+    const team4 = [...players];
+ 
+    // also...
+    const team5 = Array.from(players);
+  
+    // now when we update it, the original one isn't changed
+    
+    team2[1]= 'Kitty';
+    console.log('team2: ',team2);
+    console.log('players: ',players);
+
+    team4[2] = 'Joe';
+    console.log('team4: ',team4);
+    console.log('players: ',players);
+
+    team5[3] = 'Honey';
+    console.log('team5: ',team5);
+    console.log('players: ',players);
+
+
+    // The same thing goes for objects, let's say we have a person object
+
+    // with Objects
+    const person = {
+      name: 'Wes Bos',
+      age: 80
+    };
+
+    // and think we make a copy (this is a reference, not a copy):
+    // const captain = person;
+    // captain.number =99;
+    // captain.age = 33;
+
+    // console.log('person: ',person,'captain: ',captain);
+    
+
+    // how do we make a copy instead?
+
+    //for Object.assign, start with a blank object, then name the object to copy;
+    //I can also 'fold in' (add or change) new properties in the object
+
+    const cap2 = Object.assign({},person,{number:99, age:21});
+    console.log('person: ',person,'\n','cap2: ',cap2);
+
+    // We will hopefully soon see the object ...spread
+    //const cap3 = {...person}; //similar to React.  It's not there yet
+    
+     //this will copy the first level;  the second level deep is a reference
+     //and can be changed.
+
+    const mel = {
+      name: 'Mel',
+      age: 55,
+      contact: {
+        email: 'dhmofan@gmail.com',
+        phone: 4071234567
+      }
+    }
+
+    console.clear();
+    console.log('mel before mods: ',mel);   //this is altered too!  unexpected...
+    
+    const child = Object.assign({},mel);
+    child.contact.email='thekid@yahoo.com';
+    child.name = 'favorite';
+    child.age =12;
+    console.log('mel after mods: ',mel);
+    console.log('child: ',child);
+
+    mel.contact.email='dhmofan@gmail.com';    //this resets all parent and child objects retroactively
+
+    //this is the 'poor man's' solution to deep cloning of an object    
+    const redHeadedStepChild = JSON.parse(JSON.stringify(mel));
+    redHeadedStepChild.contact.email='Iwish@yahoo.com';
+    redHeadedStepChild.name = 'non-favorite';
+    redHeadedStepChild.age = 12;
+
+    console.log('mel after mods: ',mel);
+    console.log('redHeadedStepChild: ',redHeadedStepChild);
+
+    //this works because json stringify returns a string and not an object, so references are lost;
+
+    // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
+
+  </script>
+
+</body>
+</html>

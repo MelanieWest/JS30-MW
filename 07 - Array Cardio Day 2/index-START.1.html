@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Array Cardio 💪💪</title>
+</head>
+<body>
+  <p><em>Psst: have a look at the JavaScript Console</em> 💁</p>
+  <script>
+    // ## Array Cardio Day 2
+
+    //I modified the array and the assignment a little bit
+    // const people = [
+    //   { name: 'Wes', year: 1987 },
+    //   { name: 'Kait', year: 2015 },
+    //   { name: 'Irv', year: 1991 },
+    //   { name: 'Lux', year: 1965 }
+    // ];
+
+   // Some and Every Checks
+    // Array.prototype.some() // is at least one person 50 or older?
+    // var date = new Date();
+    // var yearNow = date.getFullYear();
+    // console.log(yearNow);
+    // var someOver50;
+    // someOver50=people.some(over50);
+    // console.log(someOver50);
+
+    // function over50(person, index, people){
+    //   var age = yearNow-person.year;
+    //   console.log(age);
+    //   return age > 50;
+    // }
+    // // Array.prototype.every() // is everyone 50 or older?
+
+    // var allOver50;
+    // allOver50=people.every(over50);
+    // console.log(allOver50);
+
+
+    const people = [
+      { name: 'Wes', year: 1988 },
+      { name: 'Kait', year: 1986 },
+      { name: 'Irv', year: 1970 },
+      { name: 'Lux', year: 2015 }
+    ];
+
+    const comments = [
+      { text: 'Love this!', id: 523423 },
+      { text: 'Super good', id: 823423 },
+      { text: 'You are the best', id: 2039842 },
+      { text: 'Ramen is my fav food ever', id: 123523 },
+      { text: 'Nice Nice Nice!', id: 542328 }
+    ];
+   
+
+     // Some and Every Checks
+    // Array.prototype.some() // is at least one person 19 or older?
+      // (the some method will return true if one or more elements meets the criteria)
+
+      const isAdult = people.some(function(person){
+        const currentYear = (new Date()).getFullYear();
+        if(currentYear - person.year >= 19){
+          return true;
+        }
+      });
+
+      console.log({isAdult});
+
+      //more concise way to do the same thing:
+
+      const stillAdult = people.some(person => {
+        const currentYear = (new Date()).getFullYear();
+        return currentYear - person.year >= 19
+      });
+      console.log({stillAdult});
+
+      //shorter still, but harder to read:
+      const soAdult = people.some(person=>((new Date()).
+      getFullYear())-person.year >=19);
+
+      console.log({soAdult});
+
+
+      console.log('done with the some method');
+
+
+
+    // Array.prototype.every() // is everyone 19 or older?
+
+      //similar to the some method - copy and change 'some' to 'every'
+      //- it returns true only if all elements meet the prescribed condition
+
+      const allAdults = people.every(person=>((new Date()).
+      getFullYear())-person.year >=19);
+
+      console.log({allAdults});
+ 
+
+    // Array.prototype.find()
+    // Find is like filter, but instead returns the first item it finds that matches
+
+    // find the comment with the ID of 823423
+
+    //my method
+    var theOne;
+    var theID = 823423;
+
+    theOne = comments.find(theComment);
+    console.log(theOne.text);
+
+    function theComment(comment){
+      return comment.id==theID;
+    }
+
+    //his method
+    const comment = comments.find(function(comment){
+      if(comment.id === 823423){
+        return true;
+      }
+    });
+    console.log("comment: ",comment);
+
+    //he asked me to replace using arrow function and implicit return:
+    const chosen = comments.find(chosen =>{
+      return chosen.id === 823423});
+  
+    console.log("chosen : ",chosen);   
+
+    // Array.prototype.findIndex()
+    // Find the comment with this ID
+    // delete the comment with the ID of 823423
+
+    //my method (including some messing around).  I had to comment it out
+    //before trying his method, since my 'splice' modifies the original array.
+
+    // var newOne;
+    // var newID = 123523;
+
+      //call my previous function that searches for the comment with the selected id
+
+    // var theIndex=comments.findIndex(theComment);
+    // comments.splice(theIndex,1);
+    // console.table(comments);
+
+    //his method:
+
+    const index = comments.findIndex(comment =>comment.id ===823423);
+    console.log("index: ",index);
+
+      //instead of modifying the original array with 'splice', as I did, it is often preferred
+      //to create a new array.  the ellipses 'spread' the data out individually.  Without them
+      //I would be creating an array of two smaller arrays.
+
+    const newComments = [
+      ...comments.slice(0,index),
+      ...comments.slice(index+1)
+    ];
+
+   console.table(newComments); 
+
+  </script>
+</body>
+</html>

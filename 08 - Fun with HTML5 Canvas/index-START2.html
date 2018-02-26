@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+
+<canvas id="draw" width="800" height="800"></canvas>
+
+<script>
+
+const canvas = document.querySelector('#draw');
+
+//we actually draw on the context, not the canvas:
+const ctx = canvas.getContext('2d');
+
+//set the canvas size here - this will override the html settings
+//this was tested and works fine - the canvas fills the screen.
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round';
+ctx.lineCap= 'round';
+ctx.lineWidth = '25';
+
+//set a 'flag' that we can toggle so that drawing only occurs
+//according to our control (only on mouse down, not mouse move)
+
+let isDrawing = false;
+
+//lines require two points; initialize one of the points
+let lastX =0;
+let lastY =0;
+
+//the next two lines play with style, after the basic
+//line draw was working
+
+let hue =0;                 //relates to line color
+let direction = true;       //direction of line width change
+
+function draw(e){
+  if(!isDrawing) return; //stop the function when mouse is not down
+  console.log(e);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(e.offsetX, e.offsetY);
+
+  //next line was added to allow the color to vary, using hsl color style
+  ctx.strokeStyle = `hsl(${hue}, 100%,50%)`;
+
+
+  ctx.stroke();
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  //next lines were added after basic draw was working.  Here we
+  //set color and line width to variables and modify them with each point drawn
+
+  hue++;
+  if(hue >=360){hue=0}
+  if(ctx.lineWidth >= 50 || ctx.lineWidth <=1){
+    direction = !direction  //toggle line width between increasing or decreasing
+  }
+  if(direction){
+    ctx.lineWidth ++;
+  }else{
+    ctx.lineWidth--;
+  }
+  
+
+}
+
+//in theory, the draw function should be called each time my mouse moves over the canvas
+//in practice, the mouse position is only console logged when I click on the canvas.  When the other
+//lines are added, nothing ever logs.  It seems like I am copying his code to the letter...
+
+
+canvas.addEventListener('mousemove',draw);
+
+//since drawing only happens during mouse down, add more functionality here.
+//we need to start where we are, not where we were last drawing
+
+canvas.addEventListener('mousedown',(e)=>{
+    isDrawing = true;
+    //instead of assigning x and y individually, we can do them both in one line:
+    // this is ES6 array destructuring (but they aren't global...)
+    [lastX,lastY] = [e.offsetX,e.offsetY];
+});
+canvas.addEventListener('mouseup',()=> isDrawing = false);
+canvas.addEventListener('mouseout',()=>isDrawing = false);
+
+
+
+</script>
+
+<style>
+  html, body {
+    margin:0;
+  }
+</style>
+
+</body>
+</html>

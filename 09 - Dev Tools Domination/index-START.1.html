@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Console Tricks!</title>
+</head>
+<body>
+
+  <p onClick="makeGreen()">×BREAK×DOWN×</p>
+
+  <script>
+    const dogs = [{ name: 'Snickers', age: 2 }, { name: 'Hugo', age: 8 }];
+    
+    count =0;   //use this to toggle the color of the p element
+
+    function makeGreen() {
+        count++
+        const p = document.querySelector('p');
+
+        if(count%2!=0){
+         p.style.color = '#BADA55';
+         p.style.fontSize = '50px';
+        }
+        else{
+         p.style.color = '#55ADAB';
+         p.style.fontSize = '20px';
+        }
+        
+   
+
+    // Regular
+    console.log("hello");
+
+    // Interpolated
+    console.log('Hello, count is up to %s ',count);
+    //using ES6
+    console.log(`Hello, count is up to ${count}`);
+
+    // Styled
+    // %c in front of the element to be styled, then comma before the styling
+
+    console.log('%c I am some great text','font-size: 50px; background:red; text-shadow: 10px 10px 0 blue');
+
+    // warning!
+    console.warn('OH NOOOO Mr Bill!');
+
+    // Error :|
+    console.error("Danger Danger");
+
+    // Info (in his console there is a little 'i' by the message - not with me)
+    console.info("Crocodiles eat 3-4 people per year");
+
+    // Testing
+    console.assert(count===1,'The count is not 1');
+    console.assert(p.classList.contains('smiley'),'the class list for p is void of smiles');
+
+
+    // clearing -- clears the console of previous messages
+   // console.clear();
+
+    // Viewing DOM Elements
+    console.log(p);   //show me the 'p' element itself
+    console.dir(p);   //shows me a dropdown with all methods & properties
+
+    // counting
+
+    console.count('Mel');
+    console.count('Mel');
+    console.count('Mel');
+    console.count('Mark');
+    console.count('Mark');
+    console.count('Mel');
+    console.count('Mel');
+
+    // timing
+
+    console.time('fetching data');
+    fetch('https://api.github.com/users/wesbos')
+      .then(data=>data.json())
+      .then(data=>{
+        console.timeEnd('fetching data');
+        console.log(data);
+      });
+
+    }
+
+    // Grouping together
+    dogs.forEach(dog=>{
+      console.log(`This is ${dog.name}`);
+      console.log(`${dog.name} is ${dog.age} years old`);
+      console.log(`${dog.name} is ${dog.age *7} dog years old`);  
+    });
+
+    //instead we can do...(this groups the data in the console)
+    dogs.forEach(dog=>{
+      console.group(`${dog.name}`);
+      console.log(`This is ${dog.name}`);
+      console.log(`${dog.name} is ${dog.age} years old`);
+      console.log(`${dog.name} is ${dog.age *7} dog years old`);
+      console.groupEnd(`${dog.name}`);
+    })
+
+    //this collapses the data in the console, and I can drop it down if I so desire
+    dogs.forEach(dog=>{
+      console.groupCollapsed(`${dog.name}`);
+      console.log(`This is ${dog.name}`);
+      console.log(`${dog.name} is ${dog.age} years old`);
+      console.log(`${dog.name} is ${dog.age *7} dog years old`);
+      console.groupEnd(`${dog.name}`);
+    })
+    console.table(dogs);
+    
+
+  </script>
+</body>
+</html>
