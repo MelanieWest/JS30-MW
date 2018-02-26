@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Videos</title>
+</head>
+<body>
+  <ul class="videos">
+    <li data-time="5:43">
+      Video 1
+    </li>
+    <li data-time="2:33">
+      Video 2
+    </li>
+    <li data-time="3:45">
+      Video 3
+    </li>
+    <li data-time="0:47">
+      Video 4
+    </li>
+    <li data-time="5:21">
+      Video 5
+    </li>
+    <li data-time="6:56">
+      Video 6
+    </li>
+    <li data-time="3:46">
+      Video 7
+    </li>
+    <li data-time="5:25">
+      Video 8
+    </li>
+    <li data-time="3:14">
+      Video 9
+    </li>
+    <li data-time="3:31">
+      Video 10
+    </li>
+    <li data-time="5:59">
+      Video 11
+    </li>
+    <li data-time="3:07">
+      Video 12
+    </li>
+    <li data-time="11:29">
+      Video 13
+    </li>
+    <li data-time="8:57">
+      Video 14
+    </li>
+    <li data-time="5:49">
+      Video 15
+    </li>
+    <li data-time="5:52">
+      Video 16
+    </li>
+    <li data-time="5:50">
+      Video 17
+    </li>
+    <li data-time="9:13">
+      Video 18
+    </li>
+    <li data-time="11:51">
+      Video 19
+    </li>
+    <li data-time="7:58">
+      Video 20
+    </li>
+    <li data-time="4:40">
+      Video 21
+    </li>
+    <li data-time="4:45">
+      Video 22
+    </li>
+    <li data-time="6:46">
+      Video 23
+    </li>
+    <li data-time="7:24">
+      Video 24
+    </li>
+    <li data-time="7:12">
+      Video 25
+    </li>
+    <li data-time="5:23">
+      Video 26
+    </li>
+    <li data-time="3:34">
+      Video 27
+    </li>
+    <li data-time="8:22">
+      Video 28
+    </li>
+    <li data-time="5:17">
+      Video 29
+    </li>
+    <li data-time="3:10">
+      Video 30
+    </li>
+    <li data-time="4:43">
+      Video 31
+    </li>
+    <li data-time="19:43">
+      Video 32
+    </li>
+    <li data-time="0:47">
+      Video 33
+    </li>
+    <li data-time="0:47">
+      Video 34
+    </li>
+    <li data-time="3:14">
+      Video 35
+    </li>
+    <li data-time="3:59">
+      Video 36
+    </li>
+    <li data-time="2:43">
+      Video 37
+    </li>
+    <li data-time="4:17">
+      Video 38
+    </li>
+    <li data-time="6:56">
+      Video 39
+    </li>
+    <li data-time="3:05">
+      Video 40
+    </li>
+    <li data-time="2:06">
+      Video 41
+    </li>
+    <li data-time="1:59">
+      Video 42
+    </li>
+    <li data-time="1:49">
+      Video 43
+    </li>
+    <li data-time="3:36">
+      Video 44
+    </li>
+    <li data-time="7:10">
+      Video 45
+    </li>
+    <li data-time="3:44">
+      Video 46
+    </li>
+    <li data-time="3:44">
+      Video 47
+    </li>
+    <li data-time="4:36">
+      Video 48
+    </li>
+    <li data-time="3:16">
+      Video 49
+    </li>
+    <li data-time="1:10">
+      Video 50
+    </li>
+    <li data-time="6:10">
+      Video 51
+    </li>
+    <li data-time="2:14">
+      Video 52
+    </li>
+    <li data-time="3:44">
+      Video 53
+    </li>
+    <li data-time="5:05">
+      Video 54
+    </li>
+    <li data-time="6:03">
+      Video 55
+    </li>
+    <li data-time="12:39">
+      Video 56
+    </li>
+    <li data-time="1:56">
+      Video 57
+    </li>
+    <li data-time="4:04">
+      Video 58
+    </li>
+  </ul>
+<script>
+  //this next line is a node list, so array methods don't work on it
+ // const timeNodes = document.querySelectorAll('[data-time]');
+
+ //this next line converts the node list to an array using the 'spread' function
+// const timeNodes = [...document.querySelectorAll('[data-time]')];
+
+//but instead, we'll convert the nodelist to an array using Array.from
+const timeNodes = Array.from(document.querySelectorAll('[data-time]'));
+  console.log(timeNodes);
+
+//when I console log timeNodes before they are plugged into the Array.from method,
+//I can see their properties.  The data-time property shows up in the 'dataset' property of the node, as 'time'
+
+
+//timeNodes is a node list, so we can't use the array.map() method
+//we CAN use forEach, but that's not what's going to happen here.
+//(we are desiring to list out the data-time value for each list item)
+
+//here the first mapping just extracts the time data from each node - still an array, but a simpler one
+//the second map uses ES6 destructuring to separate minutes from seconds.  They are strings at first, so need converting (using parseFloat) to integers
+
+//all the 'map' functions modify each element of the array but preserve the array.  
+//the 'reduce' function tallies the array up as indicated into a single number, the total time for all the videos combined.
+
+const seconds = timeNodes
+    .map(node => node.dataset.time)
+    .map(timeCode => {
+      const [mins,secs]=timeCode.split(':').map(parseFloat);
+      return (mins*60) + secs;
+      console.log(mins, secs);
+    }).reduce((total, totalSeconds)=> total+ totalSeconds);
+
+//now that we have a total number of seconds, it will be easier to understand
+//if we convert it to hh:mm:ss format as follows
+
+let secondsLeft = seconds;
+const hours = Math.floor(secondsLeft /3600);    //divide and remove the decimal portion, since I want whole hours
+secondsLeft = secondsLeft % 3600;               // how many seconds remain after hours have been figured?
+const mins = Math.floor(secondsLeft / 60);     //divide and remove the decimal portion, since I want whole minutes
+secondsLeft = secondsLeft % 60;               //this is how many seconds remain when complete hours and complete minutes have been extracted
+
+console.log(hours+':'+mins+':'+secondsLeft);
+ 
+ 
+
+
+</script>
+</body>
+</html>

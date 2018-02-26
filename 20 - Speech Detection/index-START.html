@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Speech Detection</title>
+  <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+</head>
+<body>
+
+  <div class="words" contenteditable>
+  </div>
+
+<script>
+
+  //speech recognition is a global variable that lives in the browser, on top of the window
+  //in Chrome it's webkit speech recognition; the other is in Firefox
+
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+//create a new instance of speech recognition
+
+const recognition = new SpeechRecognition();
+
+//set interim results so I can see speech as it occurs rather than waiting for it to stop
+//it will create a new <p> each time I stop speaking
+recognition.interimResults=true;
+
+let p = document.createElement('p');
+const words = document.querySelector('.words');
+words.appendChild(p);
+
+
+
+//after it starts, I will listen for the 'result' event and extract the words it thinks it heard
+
+recognition.addEventListener('result',e=>{
+  //console.log(e.results);
+  const transcript = Array.from(e.results)
+    .map(result=>result[0])
+    .map(result => result.transcript)
+    .join('');
+
+    //write my results to the DOM.  If this was all I had, it would constantly overwrite old results
+    p.textContent = transcript;
+
+    //this next block will create new 'p' elements after each pause or stop, so I can see an entire conversation's transcript:
+
+    if(e.results[0].isFinal){
+      p = document.createElement('p');
+      words.appendChild(p);
+    }
+
+    //here's where I could have fun, by listening for keywords and making things happen when they are said
+    if(transcript.includes('unicorn')){
+      console.log('Happy days and rainbows are here!!!');
+      cornify_add();
+    }
+  console.log(transcript);
+});
+
+
+//this listens for the 'end' event (when I stop speaking) and restarts the voice recognition listener for new words
+recognition.addEventListener('end',recognition.start);
+
+//this will start voice recognition the first time.  with only this, it would go until I stopped speaking
+recognition.start();
+
+</script>
+
+
+  <style>
+    html {
+      font-size: 10px;
+    }
+
+    body {
+      background:#ffc600;
+      font-family: 'helvetica neue';
+      font-weight: 200;
+      font-size: 20px;
+    }
+
+    .words {
+      max-width:500px;
+      margin:50px auto;
+      background:white;
+      border-radius:5px;
+      box-shadow:10px 10px 0 rgba(0,0,0,0.1);
+      padding:1rem 2rem 1rem 5rem;
+      background: -webkit-gradient(linear, 0 0, 0 100%, from(#d9eaf3), color-stop(4%, #fff)) 0 4px;
+      background-size: 100% 3rem;
+      position: relative;
+      line-height:3rem;
+    }
+    p {
+      margin: 0 0 3rem;
+    }
+
+    .words:before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      top: 0;
+      left: 30px;
+      bottom: 0;
+      border: 1px solid;
+      border-color: transparent #efe4e4;
+    }
+  </style>
+
+</body>
+</html>
