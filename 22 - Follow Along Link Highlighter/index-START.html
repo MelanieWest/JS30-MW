@@ -38,9 +38,16 @@
     //put the element into the dom, in the body
     document.body.append(highlight);
 
-    //listen for when someone enters a link
+    //run this function from the listener when someone enters a link
     function highlightLink(){
-      console.log("Highlight!");
+      //these only log for 'click' events, not mouseenter.
+      
+      //console.log(this);
+      const linkCoords =this.getBoundingClientRect();
+      console.log(linkCoords);
+      highlight.style.width =`${linkCoords.width}px`;
+      highlight.style.height =`${linkCoords.height}px`;
+      highlight.style.transform = `translate(${linkCoords.left}px,${linkCoords.top}px)`;
     }
 
     //listen to links for when mouse enters them, then call the function highlightLink
